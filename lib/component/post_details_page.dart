@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_project/component/post_page.dart';
 
 import 'like_page.dart';
 
+class DetailPage extends StatefulWidget {
+  DetailPage({required this.data
+  , Key? key}) : super(key: key);
+  final dynamic data;
 
-class DetailPage extends StatelessWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  @override
+  State<DetailPage> createState() => _DetailPage(this.data);
+}
+
+class _DetailPage extends State<DetailPage>{
+  _DetailPage(this.data);
+  final dynamic data;
 
   @override
     Widget build(BuildContext context) {
@@ -18,54 +26,37 @@ class DetailPage extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(8),
             children: <Widget>[
-              const Text("Title :"),
+              Text(data["title"],
+                  style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold)),
 
-              Image.asset('assets/images/switzerland.webp', height: 200, width: 200,),
+              const SizedBox(height: 5),
 
-              const Text("Description :"),
+              Text(data["date"],
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
 
-              const SizedBox(height: 10),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    child: const Text('Create Post'),
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.pink,
-                      fixedSize: const Size(150, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
-                      )
-                    ),
-                  ),
-
-                  ElevatedButton(
-                    child: const Text('Delete'),
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.pink,
-                      fixedSize: const Size(150, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
-                      )
-                    ),
-                  ),
-                ],
+              Container(
+                height: 200,
+                width: 200,
+                child: Image.network("${data["image"]}"),
               ),
+
+              const SizedBox(height: 5),
+
+              Text(data["description"],
+              style: TextStyle(fontSize: 20)),
             ],
           )
         ),
+
         bottomNavigationBar: BottomAppBar(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(icon: const Icon(Icons.home), 
                           onPressed: () {
-                            Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const PostPage()));
+                            // Navigator.push(
+                            // context,
+                            // MaterialPageRoute(builder: (context) => PostPage(postchannel:)));
                           }
                         ),
               // const Spacer(),
@@ -74,7 +65,7 @@ class DetailPage extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const LikePage()));
+                            MaterialPageRoute(builder: (context) => LikePage()));
                           }
                         ),
             ],

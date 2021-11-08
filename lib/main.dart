@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'dart:convert';
-import 'component/post_page.dart';
+import 'component/post.dart';
 
 import 'flutter_bloc.dart';
 
@@ -57,40 +56,9 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    apiStream();
-
-    usernameInput.addListener((checkText));
-    super.initState();
-  }
-
-  void apiStream() {
-    fetchAPI.stream.listen((message) {
-      final decodedMessage = jsonDecode(message);
-      print(decodedMessage);
-    });
-  }
-
-  //view all post
-  void _getPostResponse() {
-    fetchAPI.sink.add('{"type": "get_posts"}');
-  }
-
   //sign-in
   void _getSignInResponse(String userInput) {
     fetchAPI.sink.add('{"type": "sign_in", "data": {"name": "$userInput"}}');
-  }
-
-  //create post
-  void _getToPost(String title, String description, String image) {
-    fetchAPI.sink.add(
-        '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$image"}}');
-  }
-
-  //delete call
-  void _getTodeletePost(String postId) {
-    fetchAPI.sink.add('{"type": "delete_post", "data": {"postId": "$postId"}}');
   }
 
   @override
@@ -124,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                     controller: usernameInput,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: " User Name",   
+                      labelText: " Username",   
                     ),
                     onChanged: (String? usernameInput) {
                       context.read<UsernameCubit>().updateUsername;
@@ -132,6 +100,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
               ),
+              
               BlocConsumer<UsernameCubit, String>(
               listener: (context, state) {},
               builder: (context, state) {
@@ -155,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                     _getSignInResponse(textInput);
                     Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const PostPage()));
+                    MaterialPageRoute(builder: (context) => PostPage(postchannel: fetchAPI)));
                     ScaffoldMessenger.of(context).showSnackBar((const SnackBar(content: Text('Successful sign in. '))));                     
                   },
                   style: ElevatedButton.styleFrom(

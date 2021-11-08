@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 
 class CreatePage extends StatelessWidget {
@@ -9,6 +10,14 @@ class CreatePage extends StatelessWidget {
   final textTitle = TextEditingController();
   final textDescription = TextEditingController();
   final textURL = TextEditingController();
+
+  final getAPI = WebSocketChannel.connect(Uri.parse('ws://besquare-demo.herokuapp.com'));
+
+    //create post
+  void _getToPost(String title, String description, String image) {
+    getAPI.sink.add(
+        '{"type": "create_post", "data": {"title": "$title", "description": "$description", "image": "$image"}}');
+  }
 
   @override
     Widget build(BuildContext context) {
@@ -80,7 +89,13 @@ class CreatePage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     child: const Text('Create Post'),
-                    onPressed: () {},
+                    onPressed: () {
+                      String title = (textTitle.toString());
+                      String description = (textDescription.toString());
+                      String image = (textURL.toString());
+                      _getToPost(title, description, image);
+                      _showDialog(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.pink,
                       fixedSize: const Size(150, 50),
@@ -108,5 +123,24 @@ class CreatePage extends StatelessWidget {
         )
       );
     }
+}
 
+void _showDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Notification"),
+        content: const Text("Done upload the image"),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("Thank you"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
